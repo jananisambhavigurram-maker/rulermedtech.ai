@@ -56,15 +56,6 @@ app.get('/api/sms/recent', (req, res) => {
 
 // Socket.IO
 io.on('connection', (socket) => {
-    console.log(`Client connected: ${socket.id}`);
-
-    socket.on('ambulance:location', (data) => {
-        io.emit('ambulance:location', data);
-    });
-
-    socket.on('ambulance:eta', (data) => {
-        io.emit('ambulance:eta', data);
-    });
 
 // Health check
 app.get('/api/health', (req, res) => {
