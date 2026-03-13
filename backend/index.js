@@ -48,19 +48,8 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'healthy', service: 'Rural Health Backend', timestamp: new Date().toISOString() });
 });
 
+
 // SMS log endpoint
-app.get('/api/sms/recent', (req, res) => {
-    const smsService = require('./services/smsService');
-    res.json(smsService.getRecentMessages());
-});
-
-// Socket.IO
-io.on('connection', (socket) => {
-
-// Health check
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'healthy', service: 'Rural Health Backend', timestamp: new Date().toISOString() });
-});
 
 // SMS log endpoint
 app.get('/api/sms/recent', (req, res) => {
