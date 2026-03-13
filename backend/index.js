@@ -66,15 +66,43 @@ io.on('connection', (socket) => {
         io.emit('ambulance:eta', data);
     });
 
+// Health check
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'healthy', service: 'Rural Health Backend', timestamp: new Date().toISOString() });
+});
+
+// SMS log endpoint
+app.get('/api/sms/recent', (req, res) => {
+    const smsService = require('./services/smsService');
+    res.json(smsService.getRecentMessages());
+});
+
+// Socket.IO
+io.on('connection', (socket) => {
+    console.log(`Client connected: ${socket.id}`);
+
+    socket.on('ambulance:location', (data) => {
+        io.emit('ambulance:location', data);
+    });
+
+    socket.on('ambulance:eta', (data) => {
+        io.emit('ambulance:eta', data);
+    });
+
     socket.on('disconnect', () => {
         console.log(`Client disconnected: ${socket.id}`);
     });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`REST API: http://localhost:${PORT}/api`);
-    console.log(`WebSocket: ws://localhost:${PORT}`);
-});
+// Export app for Vercel
+module.exports = app;
+
+// Start server only if not acting as a serverless function
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`REST API: http://localhost:${PORT}/api`);
+        console.log(`WebSocket: ws://localhost:${PORT}`);
+    });
+}
